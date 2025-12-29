@@ -11,6 +11,10 @@
     "ios": {
       "supportsTablet": true
     },
+     "infoPlist": {
+    "NSCameraUsageDescription": "We use your camera to take a selfie for skincare analysis."
+  },
+    
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
