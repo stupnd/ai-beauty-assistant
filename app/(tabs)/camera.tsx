@@ -46,7 +46,7 @@ export default function CameraScreen() {
         quality: 0.8,
         skipProcessing: true,
       });
-
+ 
       // For now, just log the URI (next step we’ll navigate to a preview screen)
       if (photo?.uri) {
   router.push({ pathname: "/photo-preview", params: { uri: photo.uri } });
