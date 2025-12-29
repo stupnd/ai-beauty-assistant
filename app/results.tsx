@@ -31,8 +31,12 @@ const rec = getRecommendations({
     <SafeAreaView style={styles.safe}>
 <ScrollView contentContainerStyle={styles.container}>
 
-        <Text style={styles.title}>Your results ✨</Text>
+       <Text style={styles.title}>Your personalized routine ✨</Text>
+
        <Text style={styles.subtitle}>{rec.headline}</Text>
+<Text style={{ fontSize: 12, color: "#666" }}>
+  Based on your photo and answers. Always patch test new products.
+</Text>
 
 
         <View style={styles.previewBox}>
@@ -104,7 +108,17 @@ const rec = getRecommendations({
 
         <Pressable style={styles.button} onPress={() => router.back()}>
           <Text style={styles.buttonText}>Back</Text>
-        </Pressable>
+              </Pressable>
+              
+              <Pressable
+  style={[styles.button, { backgroundColor: "#fff" }]}
+  onPress={() => alert("Saved! (Coming soon)")}
+>
+  <Text style={[styles.buttonText, { color: "#111" }]}>
+    Save this routine
+  </Text>
+</Pressable>
+
 </ScrollView>
     </SafeAreaView>
   );
