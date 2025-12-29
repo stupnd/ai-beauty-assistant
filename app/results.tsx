@@ -1,6 +1,8 @@
 import { Image, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useLocalSearchParams, router } from "expo-router";
 import { getRecommendations } from "../lib/recommendations";
+import { uploadPhotoAsync } from "../lib/upload";
+
 
 export default function ResultsScreen() {
   const params = useLocalSearchParams<{
@@ -112,12 +114,22 @@ const rec = getRecommendations({
               
               <Pressable
   style={[styles.button, { backgroundColor: "#fff" }]}
-  onPress={() => alert("Saved! (Coming soon)")}
+  onPress={async () => {
+    if (!uri) return alert("No photo to save.");
+    try {
+      const res = await uploadPhotoAsync(uri);
+      alert("Uploaded ✅\n" + res.downloadUrl);
+    } catch (e) {
+      console.error(e);
+      alert("Upload failed. Check terminal logs.");
+    }
+  }}
 >
   <Text style={[styles.buttonText, { color: "#111" }]}>
     Save this routine
   </Text>
 </Pressable>
+
 
 </ScrollView>
     </SafeAreaView>
