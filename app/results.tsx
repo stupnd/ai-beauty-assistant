@@ -2,6 +2,8 @@ import { Image, Pressable, SafeAreaView, ScrollView, StyleSheet, Text, View } fr
 import { useLocalSearchParams, router } from "expo-router";
 import { getRecommendations } from "../lib/recommendations";
 import { uploadPhotoAsync } from "../lib/upload";
+import { saveAnalysis } from "../lib/firestore";
+
 
 
 export default function ResultsScreen() {
@@ -114,16 +116,39 @@ const rec = getRecommendations({
               
               <Pressable
   style={[styles.button, { backgroundColor: "#fff" }]}
-  onPress={async () => {
-    if (!uri) return alert("No photo to save.");
-    try {
-      const res = await uploadPhotoAsync(uri);
-      alert("Uploaded ✅\n" + res.downloadUrl);
-    } catch (e) {
-      console.error(e);
-      alert("Upload failed. Check terminal logs.");
-    }
-  }}
+onPress={async () => {
+  if (!uri) return alert("No photo to save.");
+
+  try {
+    // 1) Upload photo to Storage
+    const { downloadUrl } = await uploadPhotoAsync(uri);
+
+    // 2) Save Firestore record
+    const docId = await saveAnalysis({
+      photoUrl: downloadUrl,
+      answers: {
+        skinType: String(params.skinType ?? "combo"),
+        concern: String(params.concern ?? "acne"),
+        budget: String(params.budget ?? "drugstore"),
+        sensitive: params.sensitive === "true",
+      },
+      recommendations: {
+        headline: rec.headline,
+        routineAM: rec.routineAM,
+        routinePM: rec.routinePM,
+        ingredientsToLookFor: rec.ingredientsToLookFor,
+        ingredientsToAvoid: rec.ingredientsToAvoid,
+        productIdeas: rec.productIdeas,
+      },
+    });
+
+    alert(`Saved ✅\nFirestore id: ${docId}`);
+  } catch (e) {
+    console.error(e);
+    alert("Save failed. Check terminal logs.");
+  }
+}}
+
 >
   <Text style={[styles.buttonText, { color: "#111" }]}>
     Save this routine
